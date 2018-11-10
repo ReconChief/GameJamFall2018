@@ -1,9 +1,7 @@
 fileFormatVersion: 2
 guid: eb541b71d3523124baeedba118682c43
-timeCreated: 1541860228
-licenseType: Free
 ModelImporter:
-  serializedVersion: 22
+  serializedVersion: 23
   fileIDToRecycleName:
     100000: haier
     100002: haier1
@@ -56,6 +54,49 @@ ModelImporter:
     100096: transform8
     100098: transform9
     100100: //RootNode
+    100102: Armature
+    100104: Body
+    100106: Chest
+    100108: Foot IK Goal L
+    100110: Foot IK Goal R
+    100112: Foot L
+    100114: Foot L_end
+    100116: Foot R
+    100118: Foot R_end
+    100120: Foot Rot Target L
+    100122: Foot Rot Target L_end
+    100124: Foot Rot Target R
+    100126: Foot Rot Target R_end
+    100128: Hair
+    100130: Hand IK Goal L
+    100132: Hand IK Goal L_end
+    100134: Hand IK Goal R
+    100136: Hand IK Goal R_end
+    100138: Hand L
+    100140: Hand L_end
+    100142: Hand R
+    100144: Hand R_end
+    100146: Head
+    100148: Head Target
+    100150: Head Target_end
+    100152: Head_end
+    100154: Hip
+    100156: Leg Pole Target L
+    100158: Leg Pole Target L_end
+    100160: Leg Pole Target R
+    100162: Leg Pole Target R_end
+    100164: Lower Arm L
+    100166: Lower Arm R
+    100168: Lower Leg L
+    100170: Lower Leg R
+    100172: Mesh
+    100174: Shoulder L
+    100176: Shoulder R
+    100178: Spine
+    100180: Upper Arm L
+    100182: Upper Arm R
+    100184: Upper Leg L
+    100186: Upper Leg R
     400000: haier
     400002: haier1
     400004: haier10
@@ -107,17 +148,72 @@ ModelImporter:
     400096: transform8
     400098: transform9
     400100: //RootNode
+    400102: Armature
+    400104: Body
+    400106: Chest
+    400108: Foot IK Goal L
+    400110: Foot IK Goal R
+    400112: Foot L
+    400114: Foot L_end
+    400116: Foot R
+    400118: Foot R_end
+    400120: Foot Rot Target L
+    400122: Foot Rot Target L_end
+    400124: Foot Rot Target R
+    400126: Foot Rot Target R_end
+    400128: Hair
+    400130: Hand IK Goal L
+    400132: Hand IK Goal L_end
+    400134: Hand IK Goal R
+    400136: Hand IK Goal R_end
+    400138: Hand L
+    400140: Hand L_end
+    400142: Hand R
+    400144: Hand R_end
+    400146: Head
+    400148: Head Target
+    400150: Head Target_end
+    400152: Head_end
+    400154: Hip
+    400156: Leg Pole Target L
+    400158: Leg Pole Target L_end
+    400160: Leg Pole Target R
+    400162: Leg Pole Target R_end
+    400164: Lower Arm L
+    400166: Lower Arm R
+    400168: Lower Leg L
+    400170: Lower Leg R
+    400172: Mesh
+    400174: Shoulder L
+    400176: Shoulder R
+    400178: Spine
+    400180: Upper Arm L
+    400182: Upper Arm R
+    400184: Upper Leg L
+    400186: Upper Leg R
     2100000: aiStandardSurface5
     2100002: hairPhysicalShader1
     2100004: aiStandardSurface4
     2100006: aiStandardSurface7
     2100008: aiStandardSurface3
     2100010: aiStandardSurface1
+    2100012: Material
     2300000: pCube18
+    2300002: Body
+    2300004: Hair
     3300000: pCube18
+    3300002: Body
+    3300004: Hair
     4300000: pCube18
+    4300002: Hair
+    4300004: Body
     9500000: //RootNode
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material
+    second: {fileID: 2100000, guid: ae17405d054842341b248ae0e9165f0b, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
@@ -136,6 +232,7 @@ ModelImporter:
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
@@ -167,6 +264,8 @@ ModelImporter:
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
     useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 1
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -186,7 +285,6 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: 
-    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
