@@ -97,6 +97,7 @@ ModelImporter:
     100182: Upper Arm R
     100184: Upper Leg L
     100186: Upper Leg R
+    100188: Zend
     400000: haier
     400002: haier1
     400004: haier10
@@ -191,6 +192,7 @@ ModelImporter:
     400182: Upper Arm R
     400184: Upper Leg L
     400186: Upper Leg R
+    400188: Zend
     2100000: aiStandardSurface5
     2100002: hairPhysicalShader1
     2100004: aiStandardSurface4
@@ -208,6 +210,9 @@ ModelImporter:
     4300002: Hair
     4300004: Body
     9500000: //RootNode
+    13700000: Body
+    13700002: Hair
+    2186277476908879412: ImportLogs
   externalObjects:
   - first:
       type: UnityEngine:Material
