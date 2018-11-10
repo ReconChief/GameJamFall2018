@@ -876,6 +876,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSettings: {fileID: 0}
+  playerCameraPrefab: {fileID: 114958158350702340, guid: f65f99d176ed727418b2ebb2758a4cad,
+    type: 2}
 --- !u!136 &136649301393528526
 CapsuleCollider:
   m_ObjectHideFlags: 1

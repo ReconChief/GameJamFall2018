@@ -5,7 +5,9 @@ using UnityEngine;
 namespace GameJam2018 {
 	public class PlayerController : MonoBehaviour {
 		[SerializeField] private PlayerMoveSettings moveSettings;
+		[SerializeField] private PlayerCamera playerCameraPrefab;
 
+		private PlayerCamera camera;
 		private new Rigidbody rigidbody;
 		private Animator animator;
 
@@ -17,6 +19,9 @@ namespace GameJam2018 {
 			if (moveSettings == null)
 				moveSettings = ScriptableObject.CreateInstance<PlayerMoveSettings>();
 
+			camera = GameObject.Instantiate(playerCameraPrefab.gameObject).GetComponent<PlayerCamera>();
+			camera.Target = this;
+
 			rigidbody = GetComponent<Rigidbody>();
 			animator = GetComponent<Animator>();
 		}
@@ -26,6 +31,8 @@ namespace GameJam2018 {
 
 			desiredVelocity.Set(horizontal, 0, vertical);
 			desiredVelocity *= moveSettings.JogSpeed;
+			desiredVelocity = camera.XZOrientation.TransformDirection(desiredVelocity);
+			transform.forward = desiredVelocity;
 
 			rigidbody.AddForce(desiredVelocity - currentVelocity, ForceMode.VelocityChange);
 		}
