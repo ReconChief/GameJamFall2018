@@ -1,0 +1,577 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PixelEngine</name>
+    </assembly>
+    <members>
+        <member name="T:PixelEngine.AnimationParameter">
+            <summary>
+            Represents a parameter on an Animator by its string name, but automatically
+            converts to its integer representation for faster access on Animators.
+            </summary>
+        </member>
+        <member name="P:PixelEngine.AnimationParameter.Name">
+            <summary>The name of the Animator's parameter.</summary>
+        </member>
+        <member name="P:PixelEngine.AnimationParameter.Id">
+            <summary>Unity's integer representation of this parameter.</summary>
+        </member>
+        <member name="T:PixelEngine.BrokenObject.PieceLimitMode">
+            <summary>Represents the different possible methods of destroying the pieces of a broken object
+            without being noticed by the player, to save on performance.</summary>
+        </member>
+        <member name="F:PixelEngine.BrokenObject.PieceLimitMode.None">
+            <summary>The broken pieces are not automatically destroyed based on distance limits.</summary>
+        </member>
+        <member name="F:PixelEngine.BrokenObject.PieceLimitMode.WorldPositionLimits">
+            <summary>The broken pieces will be destroyed if the pieces' world space positions become greater than the limit.</summary>
+        </member>
+        <member name="F:PixelEngine.BrokenObject.PieceLimitMode.DisplacementLimits">
+            <summary>The broken pieces will be destroyed if they travel a distance greater than the limit from their initial position, per axis.</summary>
+        </member>
+        <member name="T:PixelEngine.CharacterControllerBoundary">
+            <summary>
+            <para>Represents an area that should not allow CharacterControllers to move into or walk on top of.</para>
+            <para>Note: For colliders with a center offset vector, this vector is ignored. Only the position of the transform is used.</para>
+            </summary>
+        </member>
+        <member name="F:PixelEngine.CharacterControllerBoundary.keepWorldAligned">
+            <summary>Should the collider stay aligned with the world's up direction (y-axis)?</summary>
+        </member>
+        <member name="M:PixelEngine.Combat.AttackInfo.GetAttackSet(PixelEngine.Items.EquipmentSet)">
+            <summary>
+            A convenience method that returns the Attack that this with this is referring to.
+            </summary>
+        </member>
+        <member name="M:PixelEngine.Combat.AttackInfo.GetAttack(PixelEngine.Items.EquipmentSet)">
+            <summary>
+            A convenience method that returns the Attack that this with this is referring to.
+            </summary>
+        </member>
+        <member name="M:PixelEngine.Combat.CombatExtensions.IsFriendly(PixelEngine.Combat.MobType,PixelEngine.Combat.MobType)">
+            <summary>
+            <para>Shows "who" can attack "who", or what types of hits will be considered friendly fire.</para>
+            <para>For example, players will usually not want to attack an companions, even if a player attacks on top of a companion.
+            However, enemies will be able to attack and be attacked by the player and companions.</para>
+            <para>Returns true if the target is attackable by the attacker, and false otherwise.</para>
+            </summary>
+            <param name="target">The type of mob that is in question of being attacked.</param>
+            <param name="attacker">The type of mob that is attacking.</param>
+        </member>
+        <member name="M:PixelEngine.Combat.CombatExtensions.IsFriendly(PixelEngine.Combat.IAttackable,PixelEngine.Combat.IAttacker)">
+            <summary>
+            <para>Determines whether or not a given attackable target can be attacked by the attacker.
+            This is currently only based on MobTypes (Player, Companion, Enemy). If the target or
+            attacker are not mobs, then this will return true -- that the target is attackable.</para>
+            </summary>
+            <param name="target">The target that may potentially get attacked.</param>
+            <param name="attacker">The one that may attack the target.</param>
+        </member>
+        <member name="M:PixelEngine.Combat.CombatExtensions.IsFriendly(PixelEngine.Combat.Hurtbox,PixelEngine.Combat.Hitbox)">
+            <see cref="M:PixelEngine.Combat.CombatExtensions.IsFriendly(PixelEngine.Combat.IAttackable,PixelEngine.Combat.IAttacker)"/>
+        </member>
+        <member name="T:PixelEngine.Combat.CombatStatus">
+            <summary>A CombatStatus keeps track of when an IAttackable has been recently in combat (recently attacked).</summary>
+        </member>
+        <member name="T:PixelEngine.Combat.DamageInfo">
+            <summary>
+            A bundle of information regarding damage, including the amount of the damage,
+            the one who was attacked, who dealt the damage, and the collision that caused it.
+            </summary>
+        </member>
+        <member name="P:PixelEngine.Combat.DamageInfo.Attacker">
+            <summary>The Hitbox that caused the damage. This may possibly be null.</summary>
+        </member>
+        <member name="P:PixelEngine.Combat.DamageInfo.Target">
+            <summary>The Hurtbox that was attacked. This is guaranteed to be non-null.</summary>
+        </member>
+        <member name="P:PixelEngine.Combat.DamageInfo.Amount">
+            <summary>
+            <para>The amount of damage dealt.</para>
+            <para>This value may change as the DamageInfo gets modified from
+            the beginning of the collision to the final end of the damage calculation. The amount will be
+            finalized by the time it impacts the target's Status.</para>
+            </summary>
+        </member>
+        <member name="P:PixelEngine.Combat.DamageInfo.Collision">
+            <summary>The collision that caused the target to get damaged. This may possibly be null.</summary>
+        </member>
+        <member name="M:PixelEngine.Combat.Hitbox.CanAttack(PixelEngine.Combat.Hurtbox)">
+            <summary>Is the hurtbox valid (non-null, activate and enabled), not belonging to this same owner, not friendly-fire, and not already attacked during this activation period?</summary>
+        </member>
+        <member name="M:PixelEngine.Combat.Hitbox.AttackedOwner(PixelEngine.Combat.IAttackable)">
+            <summary> Checks to see if any of the already-attacked hurtboxes belong to the given owner. </summary>
+        </member>
+        <member name="F:PixelEngine.Combat.Hurtbox.collider">
+            <summary>
+            The physical collider of this hurtbox. It's expected to be dynamic (have a Rigidbody
+            on this same GameObject) and to not be a trigger.
+            </summary>
+        </member>
+        <member name="F:PixelEngine.Combat.Hurtbox.allowMultiHit">
+            <summary>Can a hitbox damage this hurtbox if this one's owner already got damaged from the hitbox during that hitbox's current activation period?</summary>
+        </member>
+        <member name="T:PixelEngine.Combat.IAttackable">
+            <summary>
+            <para>If something is (implements) IAttackable, it represents a MonoBehaviour that can be attacked
+            and receive damage.</para>
+            <para>Thus, it has a Status to keep track of its health, and may or may not be more or less susceptible
+            to certain damage, depending on the nature of the damage dealt.</para>
+            </summary>
+        </member>
+        <member name="T:PixelEngine.Combat.IAttacker">
+            <summary>
+            <para>If something is (implements) an IAttacker, it represents a MonoBehaviour that may damage
+            any arbitrary IAttackable.</para>
+            
+            <para>It may or may not be more or less effective at damaging other things,
+            depending on the nature and circumstances of the damage dealt.</para>
+            </summary>
+        </member>
+        <member name="T:PixelEngine.Combat.IMortal">
+            <summary>
+            If something is (implements) IMortal, then it is both IAttackable and an IAttacker.
+            </summary>
+        </member>
+        <member name="T:PixelEngine.Combat.MobType">
+            <summary>
+            A very general breakdown of mob types -- helpful for simple mob aggression.
+            </summary>
+        </member>
+        <member name="M:PixelEngine.Combat.WeaponController.SyncActivation(PixelEngine.Combat.Hitbox)">
+            <summary>Makes a given hitbox synchronized in its activation state with this weapon controller.
+            For example, if this weapon controller is activated, then it will make sure the hitbox gets activated too.</summary>
+        </member>
+        <member name="T:PixelEngine.ConfigurableInput">
+            <summary>
+            The center of the configurable Xml-based input system. Here, you can load InputProfiles and use them actively during runtime.
+            </summary>
+        </member>
+        <member name="F:PixelEngine.ConfigurableInput.DefaultResourcesFilePath">
+            <summary>
+            The resource path of the input profile that will be loaded by default.
+            </summary>
+        </member>
+        <member name="M:PixelEngine.ConfigurableInput.GetNameId(System.String)">
+            <summary>
+            <para>Gets the id associated with the given controlName. Using this id will be faster than using the input control's name as a string.</para>
+            <para>Returns the id associated with the given input control name. Returns -1 if there is no valid loaded profile, or if the name was not found.</para>
+            </summary>
+            <param name="controlName">The name of the input control. This must exist in the current loaded profile.</param>
+            <returns>The id associated with the given input control name. Returns -1 if there is no valid loaded profile, or if the name was not found.</returns>
+        </member>
+        <member name="T:PixelEngine.GameObjectPool">
+            <summary>
+            A pool of deactivated GameObjects that can be re-activated and re-deactivated to be reusable repeatedly. This is useful to
+            avoid the need to instantiate and destroy objects when the demand to create and/or destroy a lot of the same objects is high or fairly consistent.
+            </summary>
+        </member>
+        <member name="M:PixelEngine.IAnimationResettable.ResetAnimatedProperties">
+            <summary>
+            Intended to reset animated properties immediately before stopping a PlayableGraph/PlayableDirector's control and giving
+            it back to the Animator -- This needs to happen so the Animator rebinds successfully to the default values again.
+            </summary>
+        </member>
+        <member name="T:PixelEngine.ICustomObjectBreaker">
+            <summary>
+            Implement this interface to customize how this object interacts with BreakableObjects
+            when the two collide in Unity.
+            </summary>
+        </member>
+        <member name="P:PixelEngine.ICustomObjectBreaker.CanCurrentlyBreakObjects">
+            <summary>
+            Can BreakableObjects be currently broken by this object? If false, then the BreakableObject
+            will only be able to be pushed, and not broken, by the collision.
+            </summary>
+        </member>
+        <member name="P:PixelEngine.ICustomObjectBreaker.BreakForceMultiplier">
+            <summary>
+            A multiplier on the force during collisions that can be used to exaggerate the effect
+            of the collision. Helpful for simulating more violent explosions!
+            </summary>
+        </member>
+        <member name="F:PixelEngine.InputControl.buttonSprites">
+            <summary>
+            The icons that show what button the player should press for an action that requires input.
+            The indices of this array match up with the integer values of the InputType enum.
+            So, the sprite at index 0 corresponds to Keyboard And Mouse input, index 1 for PS3 Controllers, and index 2 for Xbox Controllers
+            </summary>
+        </member>
+        <member name="M:PixelEngine.InputControl.GetButtonName(PixelEngine.InputMethod)">
+            <summary>
+            If this is an axis, returns the axis name. If this is a KeyCode, this returns the name of the KeyCode.
+            </summary>
+        </member>
+        <member name="T:PixelEngine.InputControlId">
+            <summary>
+            <para>Represents an identifier that saves the id of the InputControl by the given string name, for more efficient frequent access to the input system (ConfigurableInput).</para>
+            <para>By default, an InputControlId will automatically update its id when a new InputProfile is loaded.</para>
+            </summary>
+        </member>
+        <member name="F:PixelEngine.InputControlId.autoUpdate">
+            <summary>
+            Should this InputControlId update whenever a new input control profile is loaded?
+            </summary>
+        </member>
+        <member name="P:PixelEngine.InputControlId.AutoUpdate">
+            <summary>
+            When a new input profile is loaded, will this id be updated automatically?
+            </summary>
+        </member>
+        <member name="T:PixelEngine.Items.EquipmentObject">
+            <summary>
+            Represents an equipped item in the scene. It will be automatically registered with its wearer
+            and equipment slot on its Awake, or destroyed immediately if it was unable to find
+            an EquipmentSlotObjectParent in its parents.
+            </summary>
+        </member>
+        <member name="F:PixelEngine.Items.EquipmentSet.activeIndices">
+            <summary>
+            Represents the indices of the four active equipment items in the set.
+            These four items would be the ones shown in the HUD, if there is a HUD implemented to show this equipment set.
+            </summary>
+        </member>
+        <member name="E:PixelEngine.Items.EquipmentSet.onActiveItemChanged">
+            <summary>Fired when the active item in the given EquipmentSlot is changed.</summary>
+        </member>
+        <member name="M:PixelEngine.Items.EquipmentSet.WearItem(PixelEngine.Items.EquipmentSlot,PixelEngine.Items.Item)">
+            <summary>
+            Adds the given item to this EquipmentSet, and also changes to make the new item active.
+            </summary>
+            <param name="slot">The slot that the item belongs in.</param>
+            <param name="item">The item to wear.</param>
+        </member>
+        <member name="T:PixelEngine.Items.EquipmentSlotObjectParent">
+            <summary>
+            <para>Represents a Transform that corresponds to the EquipmentSlot of an IEquipper,
+            where an IEquipper is something that can wear items. Every EquipmentSlotObjectParent
+            requires an IEquipper in one of its parents. This IEquipper will be the one that is wearing
+            the item associated with this slot.</para>
+            <para>Each EquipmentSlotObjectParent currently supports only 1 equipped object at one time.</para>
+            </summary>
+        </member>
+        <member name="T:PixelEngine.Items.IEquipper">
+            <summary>
+            Represents any entity that has an EquipmentSet and that can use and wear equipment items.
+            </summary>
+        </member>
+        <member name="M:PixelEngine.Items.Item.GetIdFromName(System.String)">
+            <summary>
+            Attempts to get the item id of an item based off it's name. This assumes the item id comes first in the name. For example, the object name might be:
+            "1 - Mark's Sword" or "4 - Star Trinket", where their item ids would be 1 and 4, respectively.
+            </summary>
+            <param name="objectName">The name of the item's GameObject.</param>
+        </member>
+        <member name="M:PixelEngine.Items.ItemDropCollection.GetDrops">
+            <summary>Returns a dictionary with the item ids are the keys, and their corresponding values are the quantities of each item.</summary>
+        </member>
+        <member name="E:PixelEngine.Items.ItemInventory.onAddItem">
+            <summary>Called after an item has been added from this inventory at the given index.</summary>
+        </member>
+        <member name="E:PixelEngine.Items.ItemInventory.onRemoveItem">
+            <summary>Called after an item has been removed from this inventory at the given (previous) index.</summary>
+        </member>
+        <member name="T:PixelEngine.Items.ItemObject">
+            <summary>
+            <para>The representation of a dropped item in the scene.</para>
+            <para>Note that its collider must be on the same GameObject as the ItemObject in order for
+            the ItemObject to be picked up by InteractionControllers as an IInteractable. This
+            saves time for the InteractionControllers, as they don't have to look through entire
+            hierarchies every time it checks a GameObject for being interactable.</para>
+            </summary>
+        </member>
+        <member name="M:PixelEngine.Items.TimelineAttackSet.GetAttackTimeline(System.Int32)">
+            <summary>
+            Gets the timeline for the given attack in the combo. Note that the comboNumber starts from 1, not 0. The first attack in the combo has a combo number of 1.
+            </summary>
+            <param name="comboNumber">Which attack of the combo to retrieve, starting from 1 as the first attack.</param>
+            <returns></returns>
+        </member>
+        <member name="T:PixelEngine.Learning.ExplosionEmitter">
+            <summary>
+            Represents a simple way to test out physics explosions by pressing spacebar while in-game.
+            </summary>
+        </member>
+        <member name="M:PixelEngine.MathUtil.EnsureAngleIs0To360(System.Single)">
+            <summary>
+            <para>Checks angle to make sure it is a positive number from 0 (inclusive) to 360 (exclusive)</para>
+            </summary>
+        </member>
+        <member name="T:PixelEngine.Mobs.Level">
+            <summary>
+            Represents a single level or stat, as well as an amount of related experience.  Once enough experience is gained, the level's value is increased.
+            </summary>
+        </member>
+        <member name="T:PixelEngine.Mobs.MobIKSettings">
+            <summary>
+            A convenience class containing the current targets and weights of a humanoid mob's IK goals.
+            </summary>
+        </member>
+        <member name="T:PixelEngine.Mobs.NpcState">
+            <summary>
+            <para>The currently state of a Non-Player Character (Npc)</para>
+            Note that NpcState values map to array indices, where Idle must be 0 and Defeated must be the last one.
+            </summary>
+        </member>
+        <member name="T:PixelEngine.Mobs.Status">
+            <summary>
+            Represents the status of a given mob. This only includes their health, chakra, and stamina.
+            </summary>
+        </member>
+        <member name="P:PixelEngine.PixelAudioManager.MainMixer">
+            <summary>
+            The main AudioMixer in the scene where the final master resides.
+            </summary>
+        </member>
+        <member name="P:PixelEngine.PixelAudioManager.Master">
+            <summary>
+            The master of the main AudioMixer.
+            <seealso cref="P:PixelEngine.PixelAudioManager.MainMixer"/>
+            </summary>
+        </member>
+        <member name="P:PixelEngine.PixelCombatManager.ShowHitsplats">
+            <summary>Should IAttackables' Statuses automatically show hitsplats when damaged?</summary>
+        </member>
+        <member name="T:PixelEngine.PixelEngineConstants">
+            <summary>
+            <para>Contains useful editor paths used for many of the PixelEngine MonoBehaviours and ScriptableObjects, including the CreateAssetMenu paths.</para>
+            <para>Note that these constants should only be used in the Unity editor, and not in builds.</para>
+            </summary>
+        </member>
+        <member name="T:PixelEngine.PixelGameManager">
+            <summary>
+            Represents a singleton that doesn't destroy when new scenes are loaded that makes it easy to start coroutines.
+            <para>The PixelGameManager is in charge of calling all IPixelManagers' OnAwake() methods during Unity's Awake(), in the order they appear in the hierarchy.
+            To be used, the PixelGameManager must have a parent Transform, and all of the other IPixelManagers must be siblings of it. Their OnAwake() methods will
+            be called in the order they appear in the Transform hierarchy.</para>
+            </summary>
+        </member>
+        <member name="P:PixelEngine.PixelGameManager.Exists">
+            <summary>Is there a valid instance available?</summary>
+        </member>
+        <member name="P:PixelEngine.PixelInputManager.Exists">
+            <summary>Is there a valid instance available?</summary>
+        </member>
+        <member name="P:PixelEngine.PixelItemManager.Exists">
+            <summary>Is there a valid instance available?</summary>
+        </member>
+        <member name="P:PixelEngine.PixelUIManager.Exists">
+            <summary>Is there a valid instance available?</summary>
+        </member>
+        <member name="T:PixelEngine.Playables.MoverPlayable">
+            <summary>
+            Represents a Playable that will move a target Transform at constant speed given a direction.
+            </summary>
+        </member>
+        <member name="P:PixelEngine.Playables.MoverPlayable.Target">
+            <summary>
+            The target Transform that will be moved by this Playable.
+            </summary>
+        </member>
+        <member name="P:PixelEngine.Playables.MoverPlayable.Direction">
+            <summary>
+            The direction that this Playable will move the target Transform in world space.
+            </summary>
+        </member>
+        <member name="P:PixelEngine.Playables.MoverPlayable.LocalDirection">
+            <summary>
+            The direction that this Playable will move the target Transform in local space.
+            </summary>
+        </member>
+        <member name="P:PixelEngine.Playables.MoverPlayable.MovementSpeed">
+            <summary>
+            The speed that this Playable will move the target Transform. This will only be a
+            positive number -- if set to a negative, the direction will flip its direction.
+            </summary>
+        </member>
+        <member name="P:PixelEngine.Playables.MultiPlayableDirector.IsPlaying">
+            <summary>
+            Is a timeline currently being played?
+            </summary>
+        </member>
+        <member name="P:PixelEngine.Playables.MultiPlayableDirector.IsTransitioning">
+            <summary>
+            Is the director currently transitioning from 1 timeline to a 2nd timeline?
+            </summary>
+        </member>
+        <member name="P:PixelEngine.Playables.MultiPlayableDirector.IsFadingOut">
+            <summary>
+            Are all the currently playing timelines being faded out so the Animator can regain animation control?
+            </summary>
+        </member>
+        <member name="M:PixelEngine.Playables.PlayablesUtil.GetPlayablesByScriptPlayableType``1(UnityEngine.Playables.PlayableGraph)">
+            <summary>
+            Retrieves all ScriptPlayables in the graph that have the given type of PlayableBehaviour attached.
+            </summary>
+            <typeparam name="T">The type of PlayableBehaviour to look for.</typeparam>
+            <param name="graph">The graph to search in.</param>
+        </member>
+        <member name="T:PixelEngine.Playables.RecordMotionPlayable">
+            <summary>
+            <para>Represents a Playable that will record motion data about a given Transform in the scene.</para>
+            <para>On its own, a RecordMotionPlayable will not its connected Transform -- it only listens and records data about its Transform moving.</para>
+            </summary>
+        </member>
+        <member name="M:PixelEngine.Playables.RecordMotionPlayable.Initialize(UnityEngine.Playables.ScriptPlayable{PixelEngine.Playables.RecordMotionPlayable},UnityEngine.Playables.PlayableGraph,UnityEngine.Transform)">
+            <summary>
+            <para>Creates a script output in the given graph with the transform target, and connects the given playable to that newly made output.</para>
+            <para>Returns the script output that was created in the graph.</para>
+            </summary>
+            <param name="owner">The playable in the graph to connect to the output.</param>
+            <param name="graph">The playable graph containing the given playable owner.</param>
+            <param name="target">The target to record the motion of.</param>
+        </member>
+        <member name="M:PixelEngine.PlayerCamera.SetTargetPosition">
+            <summary>
+            Sets the camera's target/focus position, where it revolves around and looks at.
+            </summary>
+        </member>
+        <member name="T:PixelEngine.Portal">
+            <summary>
+            Represents an object in the scene that is able to teleport or bring you somewhere.
+            </summary>
+        </member>
+        <member name="T:PixelEngine.RenderBillboardTexture">
+            <summary>
+            <para>Adds functionality to a Camera to make it easier to render billboard textures with transparent backgrounds
+            using the Camera.</para>
+            <para>Note that this only is intended for use in the Unity editor.</para>
+            </summary>
+        </member>
+        <member name="T:PixelEngine.ShaderProperty">
+            <summary>
+            Represents a property on a Material by its string name, but automatically
+            converts to its integer representation for faster access with Materials.
+            </summary>
+        </member>
+        <member name="P:PixelEngine.ShaderProperty.Name">
+            <summary>The name of the property.</summary>
+        </member>
+        <member name="P:PixelEngine.ShaderProperty.Id">
+            <summary>Unity's integer representation of this shader property.</summary>
+        </member>
+        <member name="T:PixelEngine.SpecializedDatabase`1">
+            <summary>
+            A collection of Unity Objects stored together for later access.
+            </summary>
+            <typeparam name="T">The type of objects to store in the list.</typeparam>
+        </member>
+        <member name="M:PixelEngine.StringUtil.InterpretXmlString(System.String)">
+            <summary>
+            Removes unnecessary tabs and whitespace from a typical Xml string value.
+            </summary>
+            <param name="xmlStringValue">The string value (graphic) inside of an Xml element.</param>
+        </member>
+        <member name="F:PixelEngine.TwoPointTrail.time">
+            <summary>The time in seconds that each vertex will live for.</summary>
+        </member>
+        <member name="F:PixelEngine.TwoPointTrail.createNewStrip">
+            <summary>When emit is turned off, createNewStrip will be turned on to let the vertex emission process create 4 new
+            vertices to start off a new strip for the Mesh that is not connected to the old one.</summary>
+        </member>
+        <member name="P:PixelEngine.TwoPointTrail.AutoDisable">
+            <summary>Will the trail automatically stop emitting when it reaches a zero vertex count?
+            Note: This does NOT actually disable the Component.</summary>
+        </member>
+        <member name="T:PixelEngine.UI.MobStatusUI">
+            <summary>
+            The representation of a Mob being shown in the HUD, including the Mob's
+            health bar, stamina bar, image icon, and level.
+            </summary>
+        </member>
+        <member name="P:PixelEngine.UI.MobStatusUI.IsBound">
+            <summary>Is this status UI already currently bound to a Mob?</summary>
+        </member>
+        <member name="M:PixelEngine.UI.CircularBar.UpdateOnAnglesChanged">
+            <summary>
+            Updates all of the image's fill amounts and positions. This is required whenever the
+            start or end angles change, because the frame and background will need to visually change
+            when that happens.
+            </summary>
+        </member>
+        <member name="M:PixelEngine.UI.CircularBar.UpdateFillAmount">
+            <summary>
+            Only updates the fill's fill amount -- This would be just the health fill part,
+            for example. The frame and the background will remain unchanged.
+            </summary>
+        </member>
+        <member name="T:PixelEngine.UI.UIMenu">
+            <summary>
+            <para>A UIMenu represents some kind of graphical window generally
+            found on the screen canvas.</para>
+            </summary>
+        </member>
+        <member name="M:PixelEngine.UnityUtil.GetOrAddComponent``1(UnityEngine.GameObject)">
+            <summary>
+            Gets the first component of the given type on the given GameObject.
+            If the component doesn't exist, this will create it for you and return it.
+            </summary>
+            <typeparam name="T">The type of component to look for or add.</typeparam>
+            <param name="gameObject">the GameObject to look for the component on.</param>
+        </member>
+        <member name="M:PixelEngine.UnityUtil.CopyLocalPositionsInHierarchy(UnityEngine.Transform,UnityEngine.Transform,System.Boolean)">
+            <summary>
+            Copies all children transforms' local positions and rotations from the source transform hierarchy to the destination transform hierarchy.
+            This is useful when replacing characters with a ragdoll.
+            </summary>
+            <param name="source"></param>
+            <param name="destination"></param>
+            <param name="includeParent"></param>
+        </member>
+        <member name="M:PixelEngine.UnityUtil.GetRoot(UnityEngine.Transform)">
+            <summary>
+            Gets the highest transform parent in this transform's hierarchy.
+            </summary>
+            <param name="transform">The transform whose root (highest parent) we are looking for.</param>
+        </member>
+        <member name="M:PixelEngine.UnityUtil.CombineBounds(UnityEngine.Bounds,UnityEngine.Bounds)">
+            <summary>
+            Returns a new bounding box that contains both bounds a and b, with the average of their center points
+            as the center of the new bounds.
+            </summary>
+            <param name="a">The first of the bounds to combine.</param>
+            <param name="b">The second of the bounds to combine with a.</param>
+        </member>
+        <member name="M:PixelEngine.UnityUtil.GetAxisIndex(UnityEngine.Animations.Axis)">
+            <summary>
+            <para>When the enum is a single value, this converts it to an index in the range [0, 2] for convenience indexing into vectors in 3D:</para>
+            <para>x is 0, y is 1, and z is 2.</para>
+            </summary>
+            <param name="axis"></param>
+        </member>
+        <member name="T:PixelEngine.Vector2i">
+            <summary>
+            2-dimensional representation of vectors using integers.
+            </summary>
+        </member>
+        <member name="M:PixelEngine.Vector2i.op_Multiply(PixelEngine.Vector2i,PixelEngine.Vector2i)">
+            <summary> Multiplies the two vectors component-wise. </summary>
+        </member>
+        <member name="T:PixelEngine.Vector3i">
+            <summary>
+            3-dimensional representation of vectors using integers.
+            </summary>
+        </member>
+        <member name="M:PixelEngine.Vector3i.op_Multiply(PixelEngine.Vector3i,PixelEngine.Vector3i)">
+            <summary> Multiplies the two vectors component-wise. </summary>
+        </member>
+        <member name="T:PixelEngine.VectorUtil">
+            <summary>
+            A set of useful functions with vectors, especially with Unity's integer vectors.
+            </summary>
+        </member>
+        <member name="T:PixelEngine.Xml.Condition">
+            <summary><para>A condition that must be met for something to happen. For example, for there to be a possibility of dropping a given item.</para>
+            <para>All classes that derive from Condition will be able to be Serialized in Unity, and Serialized to Xml, as long as all their fields
+            can be converted to strings and back.</para>
+            <para>Note: This class was meant to be abstract, but as of Unity 2017.1, Unity cannot serialize abstract classes.</para>
+            </summary>
+        </member>
+        <member name="P:PixelEngine.Xml.Condition.FieldType">
+            <summary>How do fields of this Condition save as when saving to Xml?</summary>
+        </member>
+        <member name="P:PixelEngine.Xml.XmlAction.FieldType">
+            <summary>How do fields of this XmlAction save as when saving to Xml?</summary>
+        </member>
+    </members>
+</doc>

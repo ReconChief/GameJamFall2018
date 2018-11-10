@@ -1,0 +1,361 @@
+* Carlos' PixelEngine
+Requires: (Nothing)
+
+The PixelEngine contains years of accumulated C# code needed to make small 3D action adventure RPG games, with a variety of systems for combat, items, player and camera movement, saving/loading Xml, just to name a few.
+
+Also included are a set of very useful utilities for programmers in Unity. Previously named the PixelUtilities, this part of the combined assemblies makes life easier with integer vector operators, as well as easy-to-declare parameters for an Animator that automatically convert into their integer ids, and same for shader parameter names!
+
+
+
+** Updates
+
+*** Carlos' PixelEngine 2.2.0
+**** ???
+
+- Added GameObjectPool.Create(...) to allow the creation of GameObjectPools properly through code.
+
+- Removed all "preanimation" logic from IInteractables.
+
+- Extreme cleanup in UIGraphics for fades -- now uses CanvasGroups, and non-recursive fades on Graphic Components.
+
+- Removed the old "HitSplat" class
+
+- Majorly updated the InputControlImage class. 
+
+- Majorly updated the InteractionMessage class. It now uses an InputControlImage, and does not accidentally set its image to be opaque when its Sprite is null.
+
+- Edited the AddComponentMenu for Hitboxes and Hurtboxes to now properly be one word each ("Hurtbox" and "Hitbox").
+
+- Now, Hitboxes have the option of automatically destroying themselves after Start() if their default state is activated.
+
+- Severely updated the HorizontalBar and CircularBar classes to fix data-out-of-sync errors in the editor
+
+- Level.Experience has been renamed to Level.Exp
+
+- Added a new C# property Level.RemainingExp, which calculates the remaining experience required to level up once.
+
+- Added 2 new events: Level.onExpChanged and Level.onLevelChanged, and also Level.ResetExp() and Level.ResetLevel().
+
+- Hitboxes no longer require a Rigidbody on the same GameObject. The Rigidbody may now be in a parent GameObject.
+
+- Hitbox.baseDamage now has a default value of 1.
+
+- Hitbox.baseDamage has been changed from an integer to a float.
+
+- Fixed an issue where having Hitbox.allowMultiHit = false did not properly stop already attacked Hurtboxes from being removed from Hitboxes' alreadyAttacked lists.
+
+
+--- --- ---
+
+
+
+*** Carlos' PixelEngine 2.1.10
+**** October 29, 2018
+
+- Fixed an issue with Hitboxes improperly controlling TwoPointTrails, causing the trail to never show.
+
+- Better defined the responsibilities of the Level class in PixelEngine.Mobs. The default experience per level is 100, but you can set a curve to set a custom amount of experience per level.
+
+
+
+--- --- ---
+
+
+
+*** Carlos' PixelEngine 2.1.9
+**** October 26, 2018
+
+- Removed the Hitbox.onNonDamageCollisionEnter event
+
+- Removed Hitbox.constrainHitbox and related logic in setting the Rigidbody constraints during runtime. These settings on the Rigidbody should be setup properly from the editor.
+
+- Added Hitbox.ActivateVisuallyOnly(...) has to allow Hitboxes to not damage Hurtboxes, but while visually showing the trail, if there is one.
+
+- Added Hitbox.allowMultiHit to also let the Hitboxes decide not to allow multi-hitting.
+
+- Added the extension method UnityUtil.GetAxisIndex(this Axis axis) for convenience.
+
+- Fixed the MobHealthBar logic for keeping the UIBar showing where its target is in the Canvas' viewport space.
+
+- Fixed a NullReferenceException in BrokenObject.OptimizationCheckUpdate(). It now checks if the BrokenObject's Rigidbodies have been deleted before doing anything with them.
+
+- When a GameObjectPool needs to grow, newly created pool objects now have their parent properly set like the rest of the pooled objects.
+
+- Removed Debug.Log(...) statements from the CombatStatus and MobHealthBar classes.
+
+
+
+--- --- ---
+
+
+
+*** Carlos' PixelEngine 2.1.8
+**** October 19, 2018
+
+- Status.onHealthChanged and Status.onChakraChanged now properly get called when Status.ResetOnRespawn(...) is called.
+
+- Fixed turning TwoPointTrail.emit off (even from animating the property in Inspector) now properly causes the end of that contiguous strip of the Mesh.
+
+- Fixed making repeated calls to WeaponController.ActivateWeaponHitboxes to reset the Hitbox's alreadyAttacked lists, now allowing the Hitboxes to re-damage Hurtboxes that were already attacked over again. This makes it so you don't have to deactivate the Hitboxes every single time you want another hit in an attack, you can make several calls in a row to activate them, one per hit.
+
+- Fixed MathUtil's ray intersection ComputeShader to work if the ray were to hit the same Mesh at multiple points (using an AppendStructuredBuffer). Now, only the closest of all the hits is returned.
+
+
+
+--- --- ---
+
+
+
+*** Carlos' PixelEngine 2.1.7
+**** October 16, 2018
+
+- Provided better encapsulation for the TwoPointTrail
+
+- Updated the Hitbox class to work with the new TwoPointTrail properties.
+
+- Fix: ParticleEffects.FadeCoroutine(...) now stops without throwing a NullReferenceException if the system was destroyed mid-way.
+
+- Improved the WeaponController to just use its IAttacker as the "Hitbox parent", so it doesn't require an additional serialized field.
+
+
+
+--- --- ---
+
+
+
+*** Carlos' PixelEngine 2.1.6
+**** October 13, 2018
+
+- Hitboxes now have a new onNonDamageCollisionEnter event to notify you when the Hitbox experiences a physics collision during OnCollisionEnter that results in zero damage.
+
+
+
+--- --- ---
+
+
+
+*** Carlos' PixelEngine 2.1.5
+**** October 12, 2018
+
+- OnValidate now properly prevents invalid values on Hitbox Components.
+
+- Fixed an issue where the Status.onDefeated and Status.onAnyDefeated events were not properly firing.
+
+- Added documentation to DamageInfo
+
+*** Carlos' PixelEngine 2.1.4
+**** October 11, 2018
+
+- Added a static event to allow any class to get notified when *any* status gets damaged or defeated.
+
+
+
+--- --- ---
+
+
+
+*** Carlos' PixelEngine 2.1.3
+**** October 10, 2018
+
+- You can now get back information about the final damage from Status.GetDamaged(...) and Hurtbox.GetDamaged(...) in the PixelEngine.Combat API.
+
+
+
+--- --- ---
+
+
+
+*** Carlos' PixelEngine 2.1.2
+**** October 9, 2018
+
+- Largely improved the functionality of ParticleEffects for fade outs, which now changes the ParticleSystem's Start Color (currently supports ParticleSystemGradientModes Color and TwoColors) as well as the alpha channel of all the individual particles over time.
+
+
+
+--- --- ---
+
+
+
+*** Carlos' PixelEngine 2.1.1
+**** October 3, 2018
+
+- Improved the code quality of the PixelCombatManager, and implemented automatic hitsplats for Statuses based on the PixelCombatManager.
+
+
+
+--- --- ---
+
+
+
+*** Carlos' PixelEngine 2.1.0
+**** October 2, 2018
+
+- Created an entirely new cloth physics system: SuperiorCloth!
+	- SuperiorCloth has the following features:
+		- Fully custom-implemented cloth physics using Compute Shaders in Unity
+		- The simulation uses the following forces:
+			- World-space gravity
+			- Spring forces by Hooke's Law to connected vertices
+			- Simple air resistance, with its magnitude proportional to speed
+			- Constant local-space force (Can be animated in the Inspector)
+			- Constant world-space force (Can be animated in the Inspector)
+		- ...
+	- SuperiorCloth is still in a beta-like form. Thus, it has some drawbacks and considerations currently in-progress:
+		- Currently, the code is not yet documented
+		- There may be some minor bugs related to editing it and the cloths' vertex weights. Fixes and additional convenience will be added over time.
+		- Sometimes, warning messages about not properly disposing of ComputeBuffers may appear. This is planned to be fixed in a future release.
+
+- Exposed the Collision in DamageInfo (access-only)
+
+- Fixed an issue with the RenderBillboardTexture editor script that preventing the Inspector from functioning!
+
+- Removed the need for the PixelEngineEditorFriend assembly, with the complicated workarounds for using #if UNITY_EDITOR. Instead, code has been fully divided between the PixelEngine and PixelEditor.
+
+
+
+--- --- ---
+
+
+
+*** Carlos' PixelEngine 2.0.9
+**** September 24, 2018
+
+- Major simplifications to the UIMenu abstract class, and inherited from it in MarksWorld's SaveMenu to benefit from the disabling of its reserved input controls! This makes certain inputs deactivated when the menu is open, without needing to adjust any of the other scripts that use input at all, thanks to the PixelEngine's ConfigurableInput!
+
+- Extreme overhaul of the PixelEngine.Combat and PixelEngine.Mobs namespaces.
+	- The following changes to the classes and interfaces have been made:
+		- Renamed class: Stats to Level. It now represents just one level instead of a group of stats.
+		- New class: CombatStatus
+		- New interface: ICombatEngager
+	- Duplicate responsibilities and logic have been sharply reduced as pertaining to damage in general, Hurtboxes, and Hitboxes.
+	- Many new documentation description summaries have been added to clarify the responsibilities and capabilities of each class and interface.
+
+- TwoPointTrails now have their meshes calculated completely in world space, which creates a much more stable trail for following fast-moving objects!!
+
+
+
+--- --- ---
+
+
+
+*** Carlos' PixelEngine 2.0.8
+**** September 16, 2018
+
+- Updated our double-sided version of the Standard (Unity) shader. Its ShadowCaster pass now properly draws both sides as well, so the depth texture gets both sides correctly.
+
+*** Carlos' PixelEngine 2.0.7
+**** September 2, 2018
+
+- Fixed an bug where creating an InputProfile asset did not allow you to add any controls to it!
+- Added basic support in the ConfigurableInput system for GetButtonDown(...), GetButton(...), and GetButtonUp(...) by using the axis names!
+
+
+
+
+--- --- ---
+
+
+
+*** Carlos' PixelEngine 2.0.6
+**** August 24, 2018
+
+- Added BreakableObjects and BrokenObjects, which give you the ability to have objects that break in your scenes now!
+
+- In addition to BreakableObjects, a new interface ICustomObjectBreaker has been added to define custom breaking behaviour for certain objects!
+
+- Hitbox now implements ICustomObjectBreaker, allowing activated Hitboxes the option of applying a lot more force on BreakableObjects, despite having smaller masses!
+
+
+
+--- --- ---
+
+
+
+*** Carlos' PixelEngine 2.0.5
+**** August 10, 2018
+
+- Added the ability to scale all currently selected BoxColliders with one unified scale slider!
+
+
+
+--- --- ---
+
+
+
+*** Carlos' PixelEngine 2.0.4
+
+- Having 2 .dlls of the PixelEngine did not work, even with the import settings to define which should be used in the editor vs. runtime build. They had issues because there were still duplicate scripts everywhere, and corresponding scripts did not identify as the same ones (causing weird serialization issues). Thus, I was forced to remove all #if UNITY_EDITOR conditionals out of the entire PixelEngine, so there could be *just one PixelEngine.dll* and then use a friend assembly containing no MonoBehaviours/ScriptableObjects (mainly static classes and methods) that COULD be twice compiled without issues. This new assembly, called PixelEngineEditorFriend, can support both versions of it ("-EditorOnly" and the original) because there's no serialization issues to need to maneuver around.
+
+
+
+--- --- ---
+
+
+
+*** Carlos' PixelEngine 2.0.3
+**** August 9, 2018
+
+- The PixelEngine has been twice compiled to support both the Unity editor, and runtime in a build. The second (nearly duplicate) assembly has been named "PixelEngine-WithEditor", which includes statements enclosed in UNITY_EDITOR (#if) preprocessor blocks.
+
+
+
+--- --- ---
+
+
+
+*** Carlos' PixelEngine 2.0.2
+**** August 8, 2018
+
+- Fixed an issue with the Status class where it would throw NullReferenceExceptions if the owner was not set.
+
+- Both kinds of UIBars that exist (CircularBars and HorizontalBars) currently now support continuous multi-hit delayed underfill updates! (Meaning the delayed underfill will continue going down from the same spot, even if you get hit multiple times, until it reaches your actual health value visually in the bar)
+
+- The AddComponentMenus and CreateAssetMenus from types in the PixelEngine have been greatly organized!! All PixelEngine MonoBehaviours can be found under "PixelEngine/" in the AddComponentMenu, and the ScriptableObjects have been put under "2kPS/PixelEngine" in the CreateAssetMenu.
+
+
+
+--- --- ---
+
+
+
+*** Carlos' PixelEngine 2.0.1
+**** August 7, 2018
+
+- Made an iteration over the built-in IPixelManagers, requiring that they properly handle all potentially null fields in the inspector without throwing NullReferenceExceptions
+
+
+
+--- --- ---
+
+
+
+~~*** Carlos' PixelEngine 2.0.0
+**** August 7, 2018~~
+
+- The PixelEngine had a major rewrite in order to be genericized enough to help many kinds of game projects with combat, items, mobs, and the player for game projects in Unity!
+
+- The (previously-named) PixelUtilities assemblies have joined forces with the new PixelEngine!
+
+
+
+--- --- ---
+
+
+
+*** Carlos' Pixel Utilities 1.0.1
+**** August 1, 2018
+
+- Added a new static class UnityVectorExtensions with string parsing helper functions for Unity's Vector2, Vector3, and Vector4 types.
+
+- Vector2i and Vector3i have have TryParse functions added as well for string parsing.
+
+
+
+--- --- ---
+
+
+
+*** Carlos' Pixel Utilities 1.0.0
+**** July 30, 2018
+
+- Initial documented release of PixelUtilities in the form of compiled .dll assemblies!

@@ -1,0 +1,19 @@
+﻿#include "VertexConnectionArray.compute"
+
+struct ClothVertex {
+	int duplicateLeader;
+	float3 originalPosition;
+	float3 position;
+	float maxDistance;
+	float3 velocity;
+	int pad0;
+	float3 deltaFromSkinPos;
+	int pad1;
+
+	//VertexConnection connections[MaxVertexConnections];
+	VertexConnectionArray connections;
+
+	bool BelongsToADuplicateGroup() {
+		return duplicateLeader >= 0;
+	}
+};

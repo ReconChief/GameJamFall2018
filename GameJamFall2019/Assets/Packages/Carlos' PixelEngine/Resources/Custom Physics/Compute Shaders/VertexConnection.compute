@@ -1,0 +1,15 @@
+﻿struct VertexConnection {
+	int3 pad0;
+	int index;
+	float restLength;
+	float3 outwardOffset;
+
+
+	bool IsValid() {
+		return index >= 0;
+	}
+
+	void SetInvalid() {
+		index = -1;
+	}
+};

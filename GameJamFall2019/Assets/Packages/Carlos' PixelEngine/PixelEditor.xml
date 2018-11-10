@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PixelEditor</name>
+    </assembly>
+    <members>
+        <member name="M:PixelEditor.AssetFileUtil.DeepBinaryClone``1(``0)">
+            <summary>
+            Creates a deep copy of an object using serialization to a binary format and back, and returns the deep copy back.
+            </summary>
+            <typeparam name="T">The type of object you wish to give and receive back.</typeparam>
+            <param name="obj">The object to create a copy of.</param>
+        </member>
+        <member name="M:PixelEditor.AssetFileUtil.DeepReflectedClone``1(``0)">
+            <summary>
+            Creates a deep copy of an object by instantiating a new object of the same type, and filling all the new object's
+            fields with the values of the original. Then returns this new object back as a deep copy.
+            </summary>
+            <typeparam name="T">The type of object you wish to give and receive back.</typeparam>
+            <param name="obj">The  object to create a copy of.</param>
+        </member>
+        <member name="T:PixelEditor.ConnectedEditor">
+            <summary>
+            <para>Represents an Editor that keeps track of all the Editors created across all Inspector windows in Unity.</para>
+            <para>This makes it easy to keep track of all of their states, and repaint all of them at the same time to
+            keep in sync together, as well as using only one of them for the SceneView's onSceneGUIDelegate.</para>
+            </summary>
+        </member>
+        <member name="T:PixelEditor.EditorQualityOfLife.NormalMapCombiner">
+            <summary>
+            An EditorWindow that can be used to mathematically combine two normal maps.
+            </summary>
+        </member>
+        <member name="T:PixelEditor.EditorQualityOfLife.PackageConstants">
+            <summary>
+            Contains a handful of useful constants used by the Editor Quality of Life editor scripts.
+            </summary>
+        </member>
+        <member name="T:PixelEditor.EditorQualityOfLife.Prefabify">
+            <summary>
+            Used to replace game objects that were meant to be linked to a prefab.
+            </summary>
+        </member>
+        <member name="P:PixelEditor.EditorQualityOfLife.RecordRootMotion.IsPlaying">
+            <summary>
+            Are we currently playing a graph for recording or playback?
+            </summary>
+        </member>
+        <member name="P:PixelEditor.EditorQualityOfLife.RecordRootMotion.IsPaused">
+            <summary>
+            Was the animation playback/recording in progress but paused mid-way?
+            </summary>
+        </member>
+        <member name="M:PixelEditor.EditorQualityOfLife.RecordRootMotion.CheckBeforeStartingPlayback">
+            <summary>
+            Checks if the window is in the proper state to start playback or recording.
+            </summary>
+        </member>
+        <member name="T:PixelEditor.EditorQualityOfLife.SnapUIAnchors">
+            <summary>
+            An EditorWindow that can be used to position UI elements' anchors relative to their rect instead of their parent's rect.
+            </summary>
+        </member>
+        <member name="P:PixelEditor.EditorQualityOfLife.SnapUIAnchors.HasRectTransform">
+            <summary>
+            Is there at least one RectTransform in our selection currently?
+            </summary>
+        </member>
+        <member name="F:PixelEditor.InputProfileWindow.changesMade">
+            <summary>
+            Have changes been made to the current input profile via this editor window?
+            </summary>
+        </member>
+        <member name="T:PixelEditor.Playables.SceneViewMoverPlayable">
+            <summary>
+            A Playable that will move a SceneView camera so that the camera keeps a constant offset from a target scene object.
+            </summary>
+        </member>
+        <member name="M:PixelEditor.Playables.SceneViewMoverPlayable.Initialize(UnityEngine.Playables.ScriptPlayable{PixelEditor.Playables.SceneViewMoverPlayable},UnityEngine.Playables.PlayableGraph,UnityEditor.SceneView,UnityEngine.Transform)">
+            <summary>
+            <para>Creates a script output in the given graph, and connects the given playable to the newly created output.</para>
+            <para>Returns the script output that was created in the graph.</para>
+            </summary>
+            <param name="owner">The playable that represents this PlayableBehaviour's Playable in the graph.</param>
+            <param name="graph">The PlayableGraph containing the given Playable owner.</param>
+            <param name="victim">The SceneView whose camera will be controlled.</param>
+            <param name="target">The target object that the camera will fix its offset to.</param>
+        </member>
+        <member name="M:PixelEditor.RenderBillboardTextureInspector.OnRender(PixelEngine.RenderBillboardTexture)">
+            <summary>
+            Renders from the camera's current point of view. This only works in the editor.
+            </summary>
+        </member>
+        <member name="M:PixelEditor.ScriptableAssetUtil.Rename(UnityEngine.Object,System.String)">
+            <summary>
+            Use this to set the name of the asset and rename the asset file at the same time.
+            </summary>
+            <param name="obj">An object that is serializable by Unity. Must be a valid asset in the project.</param>
+            <param name="newName"></param>
+        </member>
+        <member name="T:PixelEditor.SpriteArray">
+            <summary>
+            A class that is serializable in the Unity Editor to store multiple sprites.
+            <para>This is particularly useful for the InputControlDatabase, where, for each InputControl,
+            there may be multiple variations of a sprite for the variation InputMethods (KeyboardAndMouse, PS3Controller, XboxController, etc.)</para>
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,67 @@
+﻿#include "VertexConnection.compute"
+
+static const int MaxVertexConnections = 8;
+
+struct VertexConnectionArray {
+	VertexConnection connection0;
+	VertexConnection connection1;
+	VertexConnection connection2;
+	VertexConnection connection3;
+	VertexConnection connection4;
+	VertexConnection connection5;
+	VertexConnection connection6;
+	VertexConnection connection7;
+
+
+	VertexConnection Get(int index) {
+		switch (index) {
+			case 0:
+				return connection0;
+			case 1:
+				return connection1;
+			case 2:
+				return connection2;
+			case 3:
+				return connection3;
+			case 4:
+				return connection4;
+			case 5:
+				return connection5;
+			case 6:
+				return connection6;
+			case 7:
+				return connection7;
+			default:
+				return connection0;
+		}
+	}
+
+	void Set(int index, VertexConnection connection) {
+		switch (index) {
+			case 0:
+				connection0 = connection;
+				break;
+			case 1:
+				connection1 = connection;
+				break;
+			case 2:
+				connection2 = connection;
+				break;
+			case 3:
+				connection3 = connection;
+				break;
+			case 4:
+				connection4 = connection;
+				break;
+			case 5:
+				connection5 = connection;
+				break;
+			case 6:
+				connection6 = connection;
+				break;
+			case 7:
+				connection7 = connection;
+				break;
+		}
+	}
+};

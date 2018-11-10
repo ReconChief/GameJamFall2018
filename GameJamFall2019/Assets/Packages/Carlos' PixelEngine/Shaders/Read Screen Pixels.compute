@@ -1,0 +1,126 @@
+﻿#pragma kernel ReadScreenPixels
+#pragma kernel CalculateGradient
+#pragma kernel SimpleBlur
+#pragma kernel SimpleAlphaAdjustment
+
+Texture2D source;
+RWTexture2D<float4> imageToSave;
+
+float4 transparentColor;
+float differenceThreshold;
+float interpolateRange;
+
+[numthreads(8, 8, 1)]
+void ReadScreenPixels(uint3 id : SV_DispatchThreadID) {
+    float4 srcColor = source[id.xy];
+
+	float upperThresholdLimit = saturate(differenceThreshold + interpolateRange);
+	float4 difference = abs(transparentColor - srcColor);
+	float4 colorToSave;
+	if (difference.r <= upperThresholdLimit
+		&& difference.g <= upperThresholdLimit
+		&& difference.b <= upperThresholdLimit
+		&& difference.r > differenceThreshold
+		&& difference.g > differenceThreshold
+		&& difference.b > differenceThreshold) {
+		colorToSave = lerp(srcColor, float4(0, 0, 0, 1), (difference - differenceThreshold) / (upperThresholdLimit - differenceThreshold));
+		//colorToSave = float4(0, 0, 1, 1);
+		colorToSave.a = 1;
+	} else if (difference.r <= differenceThreshold
+		&& difference.g <= differenceThreshold
+		&& difference.b <= differenceThreshold)
+        colorToSave = float4(0, 0, 0, 0);
+	else
+		colorToSave = srcColor;
+	/*if (dot(srcColor, transparentColor) / (length(srcColor) * length(transparentColor)) >= 0.7)
+		colorToSave = float4(0, 0, 0, 0);
+	else
+		colorToSave = srcColor;
+	*/
+
+    imageToSave[id.xy] = colorToSave;
+}
+
+// --- --- ---
+
+
+RWTexture2D<float4> gradientMap;
+
+/* Also requires:
+Texture2D source;
+
+This calculation uses backward finite differences -- Then the width and height don't need to be known!
+*/
+
+float ToGrayscale(float4 color) {
+    return (color.r + color.g + color.b) / 3;
+}
+
+float CalculateBackwardDifference(float4 currentColor, float4 previousColor) {
+	/* I divide in half because the maximum difference is 1 (and min of -1),
+	but I want to remember signage! I scale this range to [-0.5, 0.5],
+	and shift it up by 1/2 to fit into the color range of [0, 1] */
+    return (ToGrayscale(currentColor) - ToGrayscale(previousColor) + 1) / 2;
+}
+
+[numthreads(8, 8, 1)]
+void CalculateGradient(uint3 id : SV_DispatchThreadID) {
+    if (id.x == 0 || id.y == 0) {
+        gradientMap[id.xy] = float4(0.5, 0.5, 0.5, 1);
+        return;
+	}
+    float4 pixel = float4(
+		CalculateBackwardDifference(source[id.xy], source[id.xy - float2(1, 0)]),
+		CalculateBackwardDifference(source[id.xy], source[id.xy - float2(0, 1)]),
+		0.5,
+		1);
+    gradientMap[id.xy] = pixel;
+
+}
+
+
+// --- --- ---
+
+int width, height;
+
+/* Also requires:
+Texture2D source;
+RWTexture2D<float4> imageToSave;
+
+*/
+
+[numthreads(8, 8, 1)]
+void SimpleBlur(uint3 id : SV_DispatchThreadID) {
+	float4 finalColor = 0;
+	int count = 0;
+	int xMin = max(0, id.x - 1);
+	int xMax = min(width - 1, id.x + 1);
+	int yMin = max(0, id.y - 1);
+	int yMax = min(height - 1, id.y + 1);
+	for (int y = yMin; y <= yMax; y++) {
+		for (int x = xMin; x <= xMax; x++) {
+			finalColor += source[float2(x, y)];
+			count++;
+		}
+	}
+	finalColor /= count;
+
+	imageToSave[id.xy] = finalColor;
+}
+
+// --- --- ---
+
+/* Also requires:
+Texture2D source;
+
+*/
+
+[numthreads(8, 8, 1)]
+void SimpleAlphaAdjustment(uint3 id : SV_DispatchThreadID) {
+	float4 color = source[id.xy];
+	if (color.a == 0) {
+		color.a = max(max(color.r, color.g), color.b);
+	}
+	color.rgb = pow(color.rgb, 0.4545); //convert from Linear to Gamma space
+	imageToSave[id.xy] = color;
+}

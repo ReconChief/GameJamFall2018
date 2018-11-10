@@ -1,0 +1,222 @@
+﻿#include "ClothVertex.compute"
+
+#pragma kernel ClothPhysicsUpdate
+
+struct BoneWeight {
+	float boneWeight0;
+	float boneWeight1;
+	float boneWeight2;
+	float boneWeight3;
+	int boneIndex0;
+	int boneIndex1;
+	int boneIndex2;
+	int boneIndex3;
+};
+
+//Note that default values on properties here WON'T actually set them...
+//So you have to use C# to set them on the ComputeShader using SetFloat(...), SetVector(...), SetMatrix(...), etc.
+
+//Output
+RWStructuredBuffer<ClothVertex> clothVertices;
+
+//Static constants (MUST BE STATIC OR ELSE NOT PROPERLY SET)
+static const int SpringForceSteps = 8; //For integration approximation
+static const float MaxVertexSpeed = 25;
+
+//Non-changing variables after initial set
+int vertexCount;
+
+//Changing variables
+float dt;
+int timeSlices;
+float4x4 localToWorldMatrix;
+float4x4 worldToLocalMatrix;
+float stiffness;
+float vertexMass;
+float useGravity; //Either 0 or 1, as a multiplier, instead of a boolean for an if statement
+float3 worldGravity;
+float reboundSpeed;
+float airResistanceCoefficient;
+float3 constantWorldForce;
+float3 constantLocalForce;
+float uniformLossyScale;
+
+float3 accelerationFromTransform;
+
+
+//Variables for skinned meshes only
+int usesSkinnedMesh;
+
+//Per-vertex: describes the weighting of each vertex with which bones they're
+//skinned to
+StructuredBuffer<BoneWeight> boneWeights;
+//Per-bone: Based on the way the mesh started from import,
+//transforms from model local space to world space to the bone's original local space
+//StructuredBuffer<float4x4> bindPoses;
+
+//Per-bone: multiplied current boneLocalToWorld * bindPose matrices for each bone
+//Transforms: Model -> World -> Bone -> World
+StructuredBuffer<float4x4> changingBoneMatrices;
+
+//Transforms: Model -> World -> Bone
+//StructuredBuffer<float4x4> bindPoses;
+//StructuredBuffer<float4x4> bonesLToWMatrices;
+
+
+[numthreads(2, 2, 2)]
+void ClothPhysicsUpdate(uint3 id : SV_DispatchThreadID) {
+	int i = id.x + id.y * 20 + id.z * 20 * 20;
+	if (i >= vertexCount) {
+		return;
+	}
+
+	//clothVertices[i].position += float3(0, 0.001, 0);
+	//return;
+
+	//Just testing stuff
+	//clothVertices[15].position = float3(0, 5, -9);
+	//clothVertices[i].position = float3(i / 10.0, vertexMass, 0.2);
+	//Used for inverse transform the direction without scaling, just rotation (and no translation after the cast)
+	//float3x3 worldToLocalMatrixR = (float3x3) localToWorldMatrix / uniformLossyScale; //This actually didn't do what I expected 0.0
+
+	if (clothVertices[i].BelongsToADuplicateGroup()) {
+		int leader = clothVertices[i].duplicateLeader;
+		clothVertices[i].position = clothVertices[leader].position;
+		clothVertices[i].velocity = clothVertices[leader].velocity;
+		clothVertices[i].deltaFromSkinPos = clothVertices[leader].deltaFromSkinPos;
+	} else {
+		float3 skinPos = 0;
+		//Skinning
+		if (usesSkinnedMesh != 0) {
+			float4x4 skinnedModelToWorldMatrix = 0;
+			float4x4 m0 = changingBoneMatrices[boneWeights[i].boneIndex0];
+			float4x4 m1 = changingBoneMatrices[boneWeights[i].boneIndex1];
+			float4x4 m2 = changingBoneMatrices[boneWeights[i].boneIndex2];
+			float4x4 m3 = changingBoneMatrices[boneWeights[i].boneIndex3];
+
+			//float4x4 m0 = bonesLToWMatrices[boneWeights[i].boneIndex0] * bindPoses[boneWeights[i].boneIndex0];
+			//float4x4 m1 = bonesLToWMatrices[boneWeights[i].boneIndex1] * bindPoses[boneWeights[i].boneIndex1];
+			//float4x4 m2 = bonesLToWMatrices[boneWeights[i].boneIndex2] * bindPoses[boneWeights[i].boneIndex2];
+			//float4x4 m3 = bonesLToWMatrices[boneWeights[i].boneIndex3] * bindPoses[boneWeights[i].boneIndex3];
+			//For each element in the matrix
+			for (int r = 0; r < 4; r++) {
+				for (int c = 0; c < 4; c++) {
+					skinnedModelToWorldMatrix[r][c] = m0[r][c] * boneWeights[i].boneWeight0
+						+ m1[r][c] * boneWeights[i].boneWeight1
+						+ m2[r][c] * boneWeights[i].boneWeight2
+						+ m3[r][c] * boneWeights[i].boneWeight3;
+				}
+			}
+			skinPos = (float3) mul(worldToLocalMatrix, mul(skinnedModelToWorldMatrix, float4(clothVertices[i].originalPosition, 1)));
+		}
+		//Test
+		//clothVertices[i].position = skinPos;
+		//return;
+
+		//End skinning
+
+		float3 netForce = 0;
+		float3 force = 0;
+		bool isConstrained = clothVertices[i].maxDistance == 0;//i <= 10;
+
+		float3 position = (usesSkinnedMesh != 0) ? skinPos + clothVertices[i].deltaFromSkinPos : clothVertices[i].position;
+		//float3 position = clothVertices[i].position;
+		float3 velocity = clothVertices[i].velocity;
+
+		if (isConstrained) {
+			velocity = 0;
+		} else {
+
+			//Spring forces by Hooke's Law: F = -kx
+			float stepDt = dt / SpringForceSteps;
+			int connections = 0;
+			for (int j = 0; j < MaxVertexConnections; j++) {
+				VertexConnection currentConnection = clothVertices[i].connections.Get(j);
+				if (!currentConnection.IsValid())
+					break;
+
+				float3 totalImpulse = 0;
+				for (int k = 0; k < SpringForceSteps; k++) {
+					float3 stepDelta = position + velocity * k * stepDt - clothVertices[currentConnection.index].position;
+					float stepDist = length(stepDelta);
+					if (stepDist == 0) {
+						continue;
+						//totalImpulse += -stiffness * float3(1, 0, 0) * stepDt;
+					} else {
+						totalImpulse += -stiffness * (1 - currentConnection.restLength / stepDist) * stepDelta * stepDt;
+						//totalImpulse = length(totalImpulse) * normalize(clothVertices[currentConnection.index].position - currentConnection.outwardOffset);
+					}
+				}
+				force = totalImpulse / dt;
+
+				netForce += force;
+				connections++;
+			}
+			//netForce += float3(0, connections, 0);
+			//if (connections == 0) {
+				////o stands for original -- comparing current position to the originalPosition
+				//float3 oDelta = position - clothVertices[i].originalPosition;
+				//float oDist = length(oDelta);
+				//if (oDist > 0) {
+				//	force = -stiffness * oDelta * oDist;
+				//	netForce += force;
+				//}
+			//}
+
+			//Gravitational force: F = mg
+			float3 localGravity = useGravity * mul((float3x3) worldToLocalMatrix, worldGravity);
+			force = vertexMass * localGravity;
+			netForce += force;
+
+			//World and local constant forces
+			netForce += constantLocalForce;
+			netForce += mul((float3x3) worldToLocalMatrix, constantWorldForce);
+
+			//Last force
+			//Simple air resistance: F -bv
+			float speed = length(velocity);
+			if (speed > 0) {
+				force = -airResistanceCoefficient * velocity;//(velocity / speed * max(2.5, speed));
+				netForce += force;
+			}
+
+			float3 acceleration = netForce / vertexMass;
+			acceleration += accelerationFromTransform;
+			velocity += (acceleration) * dt;
+			//velocity = velocity + accelerationFromTransform * dt;
+			float finalSpeed = length(velocity);
+			if (finalSpeed > MaxVertexSpeed) {
+				velocity *= MaxVertexSpeed / finalSpeed;
+			}
+			position += velocity * dt;
+
+			if (clothVertices[i].maxDistance > 0) {
+				float3 deltaFromOriginal;
+				float currentDist;
+				//deltaFromOriginal = (usesSkinnedMesh != 0) ? position - skinPos : position - clothVertices[i].originalPosition;
+				deltaFromOriginal = position - clothVertices[i].originalPosition;
+
+				currentDist = length(deltaFromOriginal);
+
+				if (currentDist >= clothVertices[i].maxDistance) {
+					deltaFromOriginal *= clothVertices[i].maxDistance / currentDist;
+					position = clothVertices[i].originalPosition + deltaFromOriginal;
+					velocity *= -reboundSpeed;
+				}
+
+				//float testDist = 0.5;
+				//if (currentDist >= testDist) {
+				//	deltaFromOriginal *= testDist / currentDist;
+				//	velocity *= -reboundSpeed;
+				//}
+			}
+		}
+
+		clothVertices[i].position = position;
+		clothVertices[i].velocity = velocity;
+		//if (usesSkinnedMesh != 0) {
+			//clothVertices[i].position = position = skinPos;
+			clothVertices[i].deltaFromSkinPos = position - skinPos;
+		//}
+	}
+}
