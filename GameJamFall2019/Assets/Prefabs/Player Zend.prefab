@@ -174,6 +174,7 @@ GameObject:
   - component: {fileID: 136649301393528526}
   - component: {fileID: 114612079078221630}
   - component: {fileID: 114882676921948306}
+  - component: {fileID: 114102886642010422}
   m_Layer: 9
   m_Name: Player Zend
   m_TagString: Untagged
@@ -643,9 +644,8 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1191283474168940}
-  m_LocalRotation: {x: 0.000000021855694, y: -0.00000004371139, z: 1.0165751e-15,
-    w: 1}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -1, z: 0, w: 0}
+  m_LocalPosition: {x: -0.35, y: 0.61, z: 2.48}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4041408393429270}
@@ -966,7 +966,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1086856908987072}
-  m_LocalRotation: {x: -0.7071068, y: -0, z: -4.3297783e-17, w: 0.7071067}
+  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071067}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1133,6 +1133,25 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &114102886642010422
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1191283474168940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 2135868318, guid: e82b514becad6484bbf6f029b99d927e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  relativeTo: 0
+  xRetarget: 1
+  yRetarget: 2
+  zRetarget: 4
+  finalFactor: 1
+  xFinalFactor: 1
+  yFinalFactor: 1
+  zFinalFactor: 1
 --- !u!114 &114470506556181008
 MonoBehaviour:
   m_ObjectHideFlags: 1
