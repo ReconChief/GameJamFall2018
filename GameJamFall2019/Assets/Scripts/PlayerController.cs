@@ -7,13 +7,16 @@ namespace GameJam2018 {
 	public class PlayerController : MonoBehaviour {
 		private static readonly AnimationParameter IsMovingId = "Is Moving";
 		private static readonly AnimationParameter FinalMovementSpeedId = "Final Movement Speed";
+		private static readonly AnimationParameter AttackId = "Attack";
+
+		private const float AttackUnjoggableTime = 0.6f;
 
 		[SerializeField] private PlayerMoveSettings moveSettings;
 		[SerializeField] private PlayerCamera playerCameraPrefab;
 
-		//[Header(PixelEngineConstants.AnimatedOnlyProperties)]
-		//[Range(0, 1)]
-		//[SerializeField] private float movementFactor = 1
+		[Header(PixelEngineConstants.AnimatedOnlyProperties)]
+		[Range(0, 1)]
+		[SerializeField] private float movementFactor = 1;
 
 		private PlayerCamera camera;
 		private new Rigidbody rigidbody;
@@ -23,6 +26,7 @@ namespace GameJam2018 {
 		private float vertical;
 		private Vector3 desiredVelocity;
 		private float finalMovementSpeed;
+		private float timeLastAttacked;
 
 		public void Awake() {
 			if (moveSettings == null)
@@ -39,9 +43,19 @@ namespace GameJam2018 {
 			Vector3 currentVelocity = rigidbody.velocity;
 
 			desiredVelocity.Set(horizontal, 0, vertical);
-
-			desiredVelocity *= finalMovementSpeed;
+			desiredVelocity.Normalize();
 			desiredVelocity = camera.XZOrientation.TransformDirection(desiredVelocity);
+
+			Vector3 currentForward = transform.forward;
+
+			//Used to make the player turn faster when making them switch directions
+			float fDotI = Vector3.Dot(currentForward, desiredVelocity); //Current forward dotted with the new movement direction
+			float additionalTurnFactor = (fDotI < -0.8f) ? 2 : 1;
+
+			transform.forward = Vector3.Lerp(currentForward, desiredVelocity, moveSettings.TurnLerpSpeed * additionalTurnFactor * Time.fixedDeltaTime);
+			desiredVelocity *= finalMovementSpeed;
+
+			desiredVelocity.y = currentVelocity.y;
 
 			rigidbody.AddForce(desiredVelocity - currentVelocity, ForceMode.VelocityChange);
 		}
@@ -50,22 +64,28 @@ namespace GameJam2018 {
 			horizontal = Input.GetAxis("Horizontal");
 			vertical = Input.GetAxis("Vertical");
 
-			//Debating whether or not to do this with physics too... hm...
-			if (desiredVelocity.sqrMagnitude > 0.01f)
-				transform.forward = Vector3.Lerp(transform.forward, desiredVelocity.normalized, moveSettings.TurnLerpSpeed * Time.deltaTime);
+			if (Input.GetKeyDown(KeyCode.Mouse0)) {
+				Attack();
+			}
 
 			UpdateFinalMovementSpeed();
 			UpdateContinuousAnimatorParameters();
 		}
 
+		private void Attack() {
+			animator.SetTrigger(AttackId);
+			timeLastAttacked = Time.time;
+		}
+
 		private void UpdateFinalMovementSpeed() {
 			finalMovementSpeed = moveSettings.JogSpeed * Mathf.Max(Mathf.Abs(horizontal), Mathf.Abs(vertical));
+			finalMovementSpeed *= movementFactor;
 		}
 
 		private void UpdateContinuousAnimatorParameters() {
 			animator.SetFloat(FinalMovementSpeedId, finalMovementSpeed);
-			animator.SetBool(IsMovingId, finalMovementSpeed > 0);
-				//&& Time.time - timeLastAttacked > AttackUnjoggableTime); //For later when we add attacks
+			animator.SetBool(IsMovingId, finalMovementSpeed > 0
+				&& Time.time - timeLastAttacked > AttackUnjoggableTime); //For later when we add attacks
 		}
 	}
 }
