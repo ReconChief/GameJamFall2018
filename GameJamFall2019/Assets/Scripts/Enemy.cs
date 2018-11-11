@@ -14,8 +14,9 @@ namespace GameJam2018 {
 
 		[Header(PixelEngineConstants.AnimatedOnlyProperties)]
 		[Range(0, 1)]
-		[SerializeField] private float movementFactor = 1;
-
+		[SerializeField] private float movementFactor = 3;
+        public AudioClip ded;
+        AudioSource audio;
 		private Animator animator;
 		private new Rigidbody rigidbody;
 		private Status status;
@@ -43,7 +44,8 @@ namespace GameJam2018 {
 		}
 
 		public void Awake() {
-			animator = GetComponent<Animator>();
+            audio = GetComponent<AudioSource>();
+            animator = GetComponent<Animator>();
 			rigidbody = GetComponent<Rigidbody>();
 			status = new Status();
 			status.MaxHealth = maxHealth;
@@ -51,6 +53,7 @@ namespace GameJam2018 {
 		}
 
 		private void OnDefeated(DamageInfo finalDamage) {
+            audio.PlayOneShot(ded, 1.0f);
 			GameObject.Destroy(gameObject);
 		}
 

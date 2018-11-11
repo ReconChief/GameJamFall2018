@@ -6,8 +6,7 @@ using UnityEngine.SceneManagement;
 namespace GameJam2018 {
 	public class GameController : MonoBehaviour {
 		private static GameController instance;
-
-		[SerializeField] private GameObject returnPoint;
+        [SerializeField] private GameObject returnPoint;
 		[SerializeField] private Vector2 enemySpawnRange = new Vector2(30, 40);
 		[SerializeField] private Enemy[] enemyPrefabs;
 
@@ -31,7 +30,8 @@ namespace GameJam2018 {
 
 		public void Start() {
 			StartCoroutine(Spawner());
-		}
+            
+        }
 
 		private IEnumerator Spawner() {
 			while (isActiveAndEnabled) {
@@ -58,7 +58,8 @@ namespace GameJam2018 {
 		}
 
 		public static void ReturnPlayer() {
-			instance.player.transform.position = instance.returnPoint.transform.position;
+           
+            instance.player.transform.position = instance.returnPoint.transform.position;
 		}
 
 		public void OnDrawGizmosSelected() {
