@@ -54,7 +54,7 @@ namespace GameJam2018 {
 		private Vector3 GetRandomEnemyPosition(Vector2 distanceRange) {
 			float angle = Random.Range(0f, 2 * Mathf.PI);
 			Vector3 worldPosition = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)); //Unit vector
-			return worldPosition * Random.Range(distanceRange.x, distanceRange.y);
+			return worldPosition * Random.Range(distanceRange.x, distanceRange.y) + new Vector3(0, 0.3f, 0);
 		}
 
 		public static void ReturnPlayer() {
