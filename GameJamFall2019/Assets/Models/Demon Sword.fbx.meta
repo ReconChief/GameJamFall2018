@@ -20,16 +20,25 @@ ModelImporter:
     2100000: aiStandardSurface1
     2100002: aiStandardSurface3
     2100004: aiStandardSurface2
+    2100006: Sword Material
     2300000: polySurface1
     2300002: polySurface3
     2300004: polySurface4
+    2300006: //RootNode
     3300000: polySurface1
     3300002: polySurface3
     3300004: polySurface4
+    3300006: //RootNode
     4300000: polySurface1
     4300002: polySurface3
     4300004: polySurface4
-  externalObjects: {}
+    4300006: Demon Sword
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Sword Material
+    second: {fileID: 2100000, guid: e8d7ec4ecd0d3f247a7a86474917d6ad, type: 2}
   materials:
     importMaterials: 1
     materialName: 0

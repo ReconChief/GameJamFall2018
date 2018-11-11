@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Name: Player Move Settings
   m_EditorClassIdentifier: 
   jogSpeed: 5
-  turnLerpSpeed: 10
+  turnLerpSpeed: 20
