@@ -8,6 +8,8 @@ using PixelEngine.Mobs;
 namespace GameJam2018 {
 	public class PlayerCharacter : MonoBehaviour, IMortal {
 		private static readonly AnimationParameter AttackTagId = "Attack";
+		private const float FallCheckInterval = 0.8f;
+		private const float FallCheckYValue = -30;
 
 		[SerializeField] private float impactHitSpeed = 5;
 
@@ -50,6 +52,8 @@ namespace GameJam2018 {
 			status.HealthRegenRate = 0;
 			status.onDamaged += OnDamaged;
 			status.onDefeated += OnDefeated;
+
+			StartCoroutine(FallCheckCoroutine());
 		}
 
 		public DamageInfo ModifyIncomingDamage(DamageInfo baseInDamage) {
@@ -78,6 +82,15 @@ namespace GameJam2018 {
 			yield return null;
 			status.ResetOnRespawn(this); //Resets the health
 			GameController.ReturnPlayer();
+		}
+
+		private IEnumerator FallCheckCoroutine() {
+			WaitForSeconds waitInstruction = new WaitForSeconds(FallCheckInterval);
+			while (isActiveAndEnabled) {
+				yield return waitInstruction;
+				if (transform.position.y < FallCheckYValue)
+					GameController.ReturnPlayer();
+			}
 		}
 
 		/// <summary>
@@ -111,5 +124,10 @@ namespace GameJam2018 {
 			StartCoroutine(HitboxAnimationCheck());
 		}
 		#endregion
+
+		public void OnDrawGizmosSelected() {
+			Gizmos.DrawLine(new Vector3(-100, FallCheckYValue, 0), new Vector3(100, FallCheckYValue, 0));
+			Gizmos.DrawLine(new Vector3(0, FallCheckYValue, -100), new Vector3(0, FallCheckYValue, 100));
+		}
 	}
 }

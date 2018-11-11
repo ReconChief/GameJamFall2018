@@ -5458,15 +5458,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 10
       objectReference: {fileID: 0}
-    - target: {fileID: 54921910055120612, guid: a6ccc896a685b5e43a6838277c9fef53,
-        type: 2}
-      propertyPath: m_Constraints
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1531876617252632, guid: a6ccc896a685b5e43a6838277c9fef53, type: 2}
-      propertyPath: m_Name
-      value: Enemy 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6ccc896a685b5e43a6838277c9fef53, type: 2}
   m_IsPrefabAsset: 0
