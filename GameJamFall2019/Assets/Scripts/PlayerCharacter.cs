@@ -65,10 +65,17 @@ namespace GameJam2018 {
 			xzDir.y = 0;
 			xzDir.Normalize();
 			rigidbody.AddForce(xzDir * impactHitSpeed, ForceMode.VelocityChange);
+			//OnDefeated(finalDamage);
 			//Debug.Log();
 		}
 
 		private void OnDefeated(DamageInfo finalDamage) {
+			StartCoroutine(Ugh());
+		}
+
+		//</3 :'(
+		private IEnumerator Ugh() {
+			yield return null;
 			status.ResetOnRespawn(this); //Resets the health
 			GameController.ReturnPlayer();
 		}

@@ -10,6 +10,7 @@ namespace GameJam2018 {
 		private static readonly AnimationParameter AttackId = "Attack";
 
 		[SerializeField] private float stopDistance = 0.3f;
+		[SerializeField] private int maxHealth = 1;
 
 		[Header(PixelEngineConstants.AnimatedOnlyProperties)]
 		[Range(0, 1)]
@@ -37,10 +38,20 @@ namespace GameJam2018 {
 			return this;
 		}
 
+		public void OnValidate() {
+			maxHealth = Mathf.Max(1, maxHealth);
+		}
+
 		public void Awake() {
 			animator = GetComponent<Animator>();
 			rigidbody = GetComponent<Rigidbody>();
 			status = new Status();
+			status.MaxHealth = maxHealth;
+			status.onDefeated += OnDefeated;
+		}
+
+		private void OnDefeated(DamageInfo finalDamage) {
+			GameObject.Destroy(gameObject);
 		}
 
 		public void FixedUpdate() {
