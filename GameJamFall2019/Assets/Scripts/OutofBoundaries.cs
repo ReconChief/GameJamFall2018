@@ -2,25 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OutofBoundaries : MonoBehaviour
-{
-    private GameController gc;
-
-    void Start()
-    {
-        gc = GameObject.FindWithTag("GameController").GetComponent<GameController>();
-    }
-
-    void Update()
-    {
-
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("Player"))
-        {
-            gc.ReturnPlayer();
-        }
-    }
+namespace GameJam2018 {
+	public class OutOfBoundaries : MonoBehaviour {
+		public void OnTriggerEnter(Collider other) {
+			if (other.gameObject == GameController.Player.gameObject) {
+				GameController.ReturnPlayer();
+			}
+		}
+	}
 }

@@ -9,7 +9,10 @@ namespace GameJam2018 {
 	public class PlayerCharacter : MonoBehaviour, IMortal {
 		private static readonly AnimationParameter AttackTagId = "Attack";
 
+		[SerializeField] private float impactHitSpeed = 5;
+
 		private Animator animator;
+		private new Rigidbody rigidbody;
 		private WeaponController weaponController;
 		private Status status;
 
@@ -40,8 +43,13 @@ namespace GameJam2018 {
 
 		public void Awake() {
 			animator = GetComponent<Animator>();
+			rigidbody = GetComponent<Rigidbody>();
 			weaponController = GetComponentInChildren<WeaponController>();
 			status = new Status();
+			status.MaxHealth = 10;
+			status.HealthRegenRate = 0;
+			status.onDamaged += OnDamaged;
+			status.onDefeated += OnDefeated;
 		}
 
 		public DamageInfo ModifyIncomingDamage(DamageInfo baseInDamage) {
@@ -50,6 +58,19 @@ namespace GameJam2018 {
 
 		public DamageInfo ModifyOutgoingDamage(DamageInfo baseOutDamage) {
 			return baseOutDamage;
+		}
+
+		private void OnDamaged(DamageInfo finalDamage) {
+			Vector3 xzDir = transform.position - finalDamage.Collision.contacts[0].point;
+			xzDir.y = 0;
+			xzDir.Normalize();
+			rigidbody.AddForce(xzDir * impactHitSpeed, ForceMode.VelocityChange);
+			//Debug.Log();
+		}
+
+		private void OnDefeated(DamageInfo finalDamage) {
+			status.ResetOnRespawn(this); //Resets the health
+			GameController.ReturnPlayer();
 		}
 
 		/// <summary>

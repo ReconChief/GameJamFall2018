@@ -1,40 +1,75 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class GameController : MonoBehaviour
-{
-    public GameObject returnPoint;
-    public GameObject player;
+namespace GameJam2018 {
+	public class GameController : MonoBehaviour {
+		private static GameController instance;
 
-    public GameObject[] spawnEnemiesPrefab;
-    public GameObject[] spawnEnemiesScene;
+		[SerializeField] private GameObject returnPoint;
+		[SerializeField] private Vector2 enemySpawnRange = new Vector2(30, 40);
+		[SerializeField] private Enemy[] enemyPrefabs;
 
-    public Transform[] location;
 
-    void Start()
-    {
-        StartCoroutine(Spawner());
-    }
+		private List<Enemy> spawnedEnemies = new List<Enemy>(16);
+		private PlayerCharacter player;
 
-    IEnumerator Spawner()
-    {
-        while(isActiveAndEnabled)
-        {
-            SpawnEnemies();
-            yield return new WaitForSeconds(2f);
-        }
-    }
+		public static PlayerCharacter Player {
+			get { return instance.player; }
+		}
 
-    public void ReturnPlayer()
-    {
-        player.gameObject.transform.position = returnPoint.transform.position;
-    }
+		public void Awake() {
+			if (instance != null && instance != this) {
+				DestroyImmediate(gameObject);
+				return;
+			}
+			instance = this;
 
-    public void SpawnEnemies()
-    {
-        //Spawn Enemies
-        spawnEnemiesScene[0] = (GameObject) Instantiate(spawnEnemiesPrefab[0], location[0].transform.position, Quaternion.Euler(0, 0, 0));
-    }
+			player = GameObject.FindWithTag("Player").GetComponent<PlayerCharacter>();
+		}
 
+		public void Start() {
+			StartCoroutine(Spawner());
+		}
+
+		private IEnumerator Spawner() {
+			while (isActiveAndEnabled) {
+				SpawnEnemies();
+				yield return new WaitForSeconds(2f);
+			}
+		}
+
+		public void Update() {
+			
+		}
+
+		private void SpawnEnemies() {
+			spawnedEnemies.Add(GameObject.Instantiate(enemyPrefabs[0].gameObject, GetRandomEnemyPosition(enemySpawnRange), Quaternion.identity).GetComponent<Enemy>());
+		}
+
+		/// <summary>
+		/// Gets a position in a circle around the world original (around the fog)
+		/// </summary>
+		private Vector3 GetRandomEnemyPosition(Vector2 distanceRange) {
+			float angle = Random.Range(0f, 2 * Mathf.PI);
+			Vector3 worldPosition = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)); //Unit vector
+			return worldPosition * Random.Range(distanceRange.x, distanceRange.y);
+		}
+
+		public static void ReturnPlayer() {
+			instance.player.transform.position = instance.returnPoint.transform.position;
+		}
+
+		public void OnDrawGizmosSelected() {
+			Color defaultColor = Gizmos.color;
+
+			Gizmos.color = new Color(1, 0.2f, 0, 0.3f);
+			Gizmos.DrawWireSphere(Vector3.zero, enemySpawnRange.x);
+			Gizmos.color = new Color(1, 0.8f, 0, 0.3f);
+			Gizmos.DrawWireSphere(Vector3.zero, enemySpawnRange.y);
+
+			Gizmos.color = defaultColor;
+		}
+	}
 }

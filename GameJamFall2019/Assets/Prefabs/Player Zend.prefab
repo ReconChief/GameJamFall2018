@@ -177,7 +177,7 @@ GameObject:
   - component: {fileID: 114102886642010422}
   m_Layer: 9
   m_Name: Player Zend
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1191,7 +1191,7 @@ MonoBehaviour:
   m_Script: {fileID: 125554627, guid: e82b514becad6484bbf6f029b99d927e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allowMultiHit: 0
+  allowMultiHit: 1
 --- !u!114 &114612079078221630
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1229,6 +1229,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08dcd2a31c782244481790215e11455a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  impactHitSpeed: 20
 --- !u!114 &114994116097434224
 MonoBehaviour:
   m_ObjectHideFlags: 1

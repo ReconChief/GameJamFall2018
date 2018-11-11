@@ -578,7 +578,7 @@ GameObject:
   - component: {fileID: 1568263942}
   - component: {fileID: 1568263941}
   m_Layer: 0
-  m_Name: GameController
+  m_Name: Menu Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -592,7 +592,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1568263940}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0af40a5c066ad947b7b98f4b574f9ea, type: 3}
+  m_Script: {fileID: 11500000, guid: 2b6aff1193df30d4d88859abb751d351, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &1568263942
@@ -762,7 +762,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1568263941}
-        m_MethodName: ChangeToGame
+        m_MethodName: StartGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

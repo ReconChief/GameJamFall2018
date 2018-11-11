@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using PixelEngine;
 
 namespace GameJam2018 {
@@ -66,6 +67,12 @@ namespace GameJam2018 {
 
 			if (Input.GetKeyDown(KeyCode.Mouse0)) {
 				Attack();
+			}
+
+			if (Input.GetKeyDown(KeyCode.D)
+				&& Input.GetKey(KeyCode.E) && Input.GetKey(KeyCode.N)) {
+				camera.CursorMovementMode = CursorMovementMode.ScreenUI;
+				SceneManager.LoadScene("EndScreen");
 			}
 
 			UpdateFinalMovementSpeed();
