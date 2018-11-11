@@ -17,36 +17,28 @@ public class DialogueScript : MonoBehaviour
     void Start()
     {
 
-        
-        
-            dialogueManager.SetActive(true);
-            dialogueActive = true;
+
+
+        dialogueManager.SetActive(true);
+        dialogueActive = true;
         StartCoroutine(TextPlayer());
-            
-        
 
     }
 
     // Update is called once per frame
     void Update()
     {
-       
-        
-       
-        
-  
-
 
         dialogueText.text = dialogueLines[currentLine];
 
     }
-        private IEnumerator TextPlayer()
+    private IEnumerator TextPlayer()
+    {
+        while (isActiveAndEnabled&& currentLine < dialogueLines.Length-1)
         {
-            while (isActiveAndEnabled)
-        {
-            if (currentLine < dialogueLines.Length) { currentLine++;}
-            
-                yield return new WaitForSeconds(10f);
-            }
+           currentLine++; 
+
+            yield return new WaitForSeconds(10f);
         }
+    }
 }

@@ -111,7 +111,7 @@ namespace GameJam2018
                 yield return waitInstruction;
                 if (transform.position.y < FallCheckYValue)
                 {
-                    audio.PlayOneShot(warp, 0.5f);
+                    audio.PlayOneShot(warp, 0.2f);
                     GameController.ReturnPlayer();
                 }
 
